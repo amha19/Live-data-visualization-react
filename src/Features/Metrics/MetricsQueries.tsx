@@ -2,50 +2,70 @@ import React, { useEffect } from 'react';
 import { Provider, createClient, useQuery } from 'urql';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-
 const client = createClient({
-    url: 'https://react.eogresources.com/graphql',
+  url: 'https://react.eogresources.com/graphql',
 });
 
-const query = `
-    query {
-        getMetrics
-      }
-    `;
+// const query = `
+//     query {
+//         getMetrics
+//       }
+//     `;
 
+const query = `
+    query ($input: MeasurementQuery) {
+        getMeasurements(input: $input){
+            value
+            metric
+            unit
+            at
+        }
+    }    
+  `;
+
+const timeStamp = +new Date();
 
 export default () => {
-    return (
-        <Provider value={client}>
-            <MetricsQueries />
-        </Provider>
-    );
+  return (
+    <Provider value={client}>
+      <MetricsQueries />
+    </Provider>
+  );
 };
 
-
 const MetricsQueries = () => {
+  const timeBefore = timeStamp;
+  const timeAfter = timeBefore - 10000;
 
-    const [result] = useQuery({ query });
-    const { fetching, data, error } = result;
+  const input = {
+    metricName: 'waterTemp',
+    before: timeBefore,
+    after: timeAfter,
+  };
 
-    useEffect(() => {
-        if (error) {
-            console.log(error.message);
-            return;
-        }
+  const [result] = useQuery({
+    query,
+    variables: {
+      input,
+    },
+  });
 
-        if (!data) return;
+  const { fetching, data, error } = result;
 
-        const { getMetrics } = data;
+  useEffect(() => {
+    if (error) {
+      console.log(error.message);
+      return;
+    }
 
-        console.log(getMetrics);
-    }, [data, error]);
+    if (!data) return;
 
-    if (fetching) return <LinearProgress />;
+    const { getMeasurements } = data;
 
-    return (
-        <React.Fragment>
-            Amha eog
-        </React.Fragment>
-    );
-}
+    console.log(getMeasurements);
+  }, [data, error]);
+
+  if (fetching) return <LinearProgress />;
+
+  return <React.Fragment>Amha eog</React.Fragment>;
+};
