@@ -4,6 +4,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { useDispatch, useSelector } from 'react-redux';
 import { IState } from '../../store';
 import { actions } from './reducer';
+import Dropdown from './Dropdown';
 
 const client = createClient({
   url: 'https://react.eogresources.com/graphql',
@@ -76,5 +77,9 @@ const MetricsQueries = () => {
 
   if (fetching) return <LinearProgress />;
 
-  return <React.Fragment>Amha eog</React.Fragment>;
+  return (
+    <React.Fragment>
+      <Dropdown />
+    </React.Fragment>
+  );
 };

@@ -6,6 +6,9 @@ export type ApiErrorAction = {
 
 const initialState = {
   metricsNamesArray: [] as string[],
+  isMetricSelected: false,
+  currentSingleName: 'Select metrics',
+  selectedNames: [] as string[],
 };
 
 const slice = createSlice({
@@ -14,6 +17,14 @@ const slice = createSlice({
   reducers: {
     metricsNamesRecived: (state, action: PayloadAction<string[]>) => {
       state.metricsNamesArray = action.payload;
+    },
+
+    setSelectedMetricName: (state, action: PayloadAction<string>) => {
+      const alreadyin = state.selectedNames.some(name => name === action.payload);
+      if (alreadyin) return;
+      state.selectedNames = [...state.selectedNames, action.payload];
+      state.currentSingleName = action.payload;
+      state.isMetricSelected = true;
     },
 
     weatherApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
