@@ -62,7 +62,7 @@ const MetricsQueries = () => {
 
     const { getMeasurements } = data;
 
-    console.log(getMeasurements);
+    // console.log(getMeasurements);
   }, [data, error]);
 
   if (fetching) return <LinearProgress />;
