@@ -1,29 +1,39 @@
 import React, { useEffect } from 'react';
 import { Provider, createClient, useQuery } from 'urql';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import { useDispatch, useSelector } from 'react-redux';
+import { IState } from '../../store';
+import { actions } from './reducer';
 
 const client = createClient({
   url: 'https://react.eogresources.com/graphql',
 });
 
-// const query = `
-//     query {
-//         getMetrics
-//       }
-//     `;
-
 const query = `
-    query ($input: MeasurementQuery) {
-        getMeasurements(input: $input){
-            value
-            metric
-            unit
-            at
-        }
-    }    
-  `;
+    query {
+        getMetrics
+      }
+    `;
 
-const timeStamp = +new Date();
+const getMetrics = (state: IState) => {
+  const { metricsNamesArray } = state.metrics;
+  return {
+    metricsNamesArray,
+  };
+};
+
+// const query = `
+//     query ($input: MeasurementQuery) {
+//         getMeasurements(input: $input){
+//             value
+//             metric
+//             unit
+//             at
+//         }
+//     }
+//   `;
+
+// const timeStamp = +new Date();
 
 export default () => {
   return (
@@ -34,36 +44,35 @@ export default () => {
 };
 
 const MetricsQueries = () => {
-  const timeBefore = timeStamp;
-  const timeAfter = timeBefore - 10000;
+  const dispatch = useDispatch();
 
-  const input = {
-    metricName: 'waterTemp',
-    before: timeBefore,
-    after: timeAfter,
-  };
+  const { metricsNamesArray } = useSelector(getMetrics);
 
-  const [result] = useQuery({
-    query,
-    variables: {
-      input,
-    },
-  });
+  //   const timeBefore = timeStamp;
+  //   const timeAfter = timeBefore - 10000;
+
+  //   const input = {
+  //     metricName: 'waterTemp',
+  //     before: timeBefore,
+  //     after: timeAfter,
+  //   };
+
+  const [result] = useQuery({ query });
 
   const { fetching, data, error } = result;
 
   useEffect(() => {
     if (error) {
-      console.log(error.message);
+      dispatch(actions.weatherApiErrorReceived({ error: error.message }));
       return;
     }
-
     if (!data) return;
+    const { getMetrics } = data;
+    // console.log(getMetrics);
+    dispatch(actions.metricsNamesRecived(getMetrics));
 
-    const { getMeasurements } = data;
-
-    // console.log(getMeasurements);
-  }, [data, error]);
+    // console.log('From useEffect: ', metricsNamesArray);
+  }, [metricsNamesArray, dispatch, data, error]);
 
   if (fetching) return <LinearProgress />;
 
