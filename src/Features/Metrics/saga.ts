@@ -7,6 +7,11 @@ function* apiErrorReceived(action: PayloadAction<ApiErrorAction>) {
   yield call(toast.error, `Error Received: ${action.payload.error}`);
 }
 
-export default function* watchApiError() {
+function* measurementRecived(action: PayloadAction<any[]>) {
+  yield call(MetricsActions.singleMeasurementRecived, action.payload);
+}
+
+export default function* watchApiCalls() {
   yield takeEvery(MetricsActions.weatherApiErrorReceived.type, apiErrorReceived);
+  yield takeEvery(MetricsActions.singleMeasurementRecived.type, measurementRecived);
 }

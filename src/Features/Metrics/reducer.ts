@@ -9,6 +9,7 @@ const initialState = {
   isMetricSelected: false,
   currentSingleName: 'Select metrics',
   selectedNames: [] as string[],
+  metricsMeasurementsArray: [] as any[],
 };
 
 const slice = createSlice({
@@ -25,6 +26,10 @@ const slice = createSlice({
       state.selectedNames = [...state.selectedNames, action.payload];
       state.currentSingleName = action.payload;
       state.isMetricSelected = true;
+    },
+
+    singleMeasurementRecived: (state, action: PayloadAction<any[]>) => {
+      state.metricsMeasurementsArray = [...state.metricsMeasurementsArray, ...action.payload];
     },
 
     weatherApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,

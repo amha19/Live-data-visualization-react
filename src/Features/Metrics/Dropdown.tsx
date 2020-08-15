@@ -40,8 +40,6 @@ export default () => {
     dispatch(actions.setSelectedMetricName(name));
   };
 
-  // console.log("under dropbox: ", metricMeasurementArr);
-
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={6}>

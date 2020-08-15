@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { IState } from '../../store';
 import { actions } from './reducer';
 import Dropdown from './Dropdown';
+import MultipleMeasurements from './MultipleMeasurements';
 
 const client = createClient({
   url: 'https://react.eogresources.com/graphql',
@@ -17,24 +18,12 @@ const query = `
     `;
 
 const getMetrics = (state: IState) => {
-  const { metricsNamesArray } = state.metrics;
+  const { metricsNamesArray, isMetricSelected } = state.metrics;
   return {
     metricsNamesArray,
+    isMetricSelected,
   };
 };
-
-// const query = `
-//     query ($input: MeasurementQuery) {
-//         getMeasurements(input: $input){
-//             value
-//             metric
-//             unit
-//             at
-//         }
-//     }
-//   `;
-
-// const timeStamp = +new Date();
 
 export default () => {
   return (
@@ -47,16 +36,7 @@ export default () => {
 const MetricsQueries = () => {
   const dispatch = useDispatch();
 
-  const { metricsNamesArray } = useSelector(getMetrics);
-
-  //   const timeBefore = timeStamp;
-  //   const timeAfter = timeBefore - 10000;
-
-  //   const input = {
-  //     metricName: 'waterTemp',
-  //     before: timeBefore,
-  //     after: timeAfter,
-  //   };
+  const { metricsNamesArray, isMetricSelected } = useSelector(getMetrics);
 
   const [result] = useQuery({ query });
 
@@ -80,6 +60,11 @@ const MetricsQueries = () => {
   return (
     <React.Fragment>
       <Dropdown />
+      {isMetricSelected ? (
+        <React.Fragment>
+          <MultipleMeasurements />
+        </React.Fragment>
+      ) : null}
     </React.Fragment>
   );
 };
