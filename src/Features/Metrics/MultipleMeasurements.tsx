@@ -87,7 +87,7 @@ const MultipleMeasurements = () => {
 
     // console.log('inside useEffect: ', getMultipleMeasurements);
 
-    getMultipleMeasurements.map((measurement: { metric: string; measurements: any }) => {
+    getMultipleMeasurements.forEach((measurement: { metric: string; measurements: any }) => {
       if (measurement.metric === currentSingleName) {
         dispatch(actions.singleMeasurementRecived(measurement.measurements));
       }

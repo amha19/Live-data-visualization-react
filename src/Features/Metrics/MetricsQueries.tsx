@@ -6,6 +6,7 @@ import { IState } from '../../store';
 import { actions } from './reducer';
 import Dropdown from './Dropdown';
 import MultipleMeasurements from './MultipleMeasurements';
+import MetricsSubscription from './MetricsSubscription';
 
 const client = createClient({
   url: 'https://react.eogresources.com/graphql',
@@ -63,6 +64,7 @@ const MetricsQueries = () => {
       {isMetricSelected ? (
         <React.Fragment>
           <MultipleMeasurements />
+          <MetricsSubscription />
         </React.Fragment>
       ) : null}
     </React.Fragment>

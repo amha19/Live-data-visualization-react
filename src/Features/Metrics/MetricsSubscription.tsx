@@ -1,6 +1,11 @@
 import React, { useEffect } from 'react';
 import { useSubscription, Provider, Client, defaultExchanges, subscriptionExchange } from 'urql';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
+import { useDispatch, useSelector } from 'react-redux';
+import { IState } from '../../store';
+import { actions } from './reducer';
+import CurrentValue from './CurrentValue';
+import { LinearProgress } from '@material-ui/core';
 
 const subscriptionClient = new SubscriptionClient('wss://react.eogresources.com/graphql', { reconnect: true });
 
@@ -35,7 +40,19 @@ const MEASUREMENT_SUBSCRIPTION = `
         }
     `;
 
+const getMetrics = (state: IState) => {
+  const { metricsNamesArray, metricsMeasurementsArray } = state.metrics;
+  return {
+    metricsNamesArray,
+    metricsMeasurementsArray,
+  };
+};
+
 const MetricsSubscription = () => {
+  const dispatch = useDispatch();
+
+  const { metricsNamesArray } = useSelector(getMetrics);
+
   const [result] = useSubscription({
     query: MEASUREMENT_SUBSCRIPTION,
   });
@@ -44,16 +61,25 @@ const MetricsSubscription = () => {
 
   useEffect(() => {
     if (error) {
-      console.log(error.message);
+      dispatch(actions.weatherApiErrorReceived({ error: error.message }));
       return;
     }
     if (!data) return;
     const { newMeasurement } = data;
 
+    // console.log(newMeasurement.metric);
+    metricsNamesArray.forEach(name => {
+      // filters out the current measurement for the selected metric
+      if (newMeasurement.metric === name) {
+        dispatch(actions.newMeasurementRecived(newMeasurement));
+      }
+    });
+    dispatch(actions.storeNewMeasurements(newMeasurement));
+
     // console.log(newMeasurement);
-  }, [data, error]);
+  }, [metricsNamesArray, dispatch, data, error]);
 
-  if (!data) return <p>Loading...</p>;
+  if (!data) return <LinearProgress />;
 
-  return <React.Fragment>Subscription</React.Fragment>;
+  return <CurrentValue />;
 };
