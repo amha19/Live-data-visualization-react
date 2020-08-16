@@ -26,6 +26,8 @@ const slice = createSlice({
   name: 'metrics',
   initialState,
   reducers: {
+    weatherApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
+
     metricsNamesRecived: (state, action: PayloadAction<string[]>) => {
       state.metricsNamesArray = action.payload;
     },
@@ -58,7 +60,19 @@ const slice = createSlice({
     storeNewMeasurements: (state, action: PayloadAction<NewMeasurementAction>) => {
       state.newMetircsValues = [...state.newMetircsValues, action.payload];
     },
-    weatherApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
+
+    removeMetricDisplay: (state, action: PayloadAction<string>) => {
+      // console.log(action.payload);
+      let arr1 = [...state.selectedNames];
+      let arr2 = [...state.metricsMeasurementsArray];
+
+      state.selectedNames = arr1.filter(element => element !== action.payload);
+      state.metricsMeasurementsArray = arr2.filter(element => element.metric !== action.payload);
+
+      //   console.log(state.selectedNames);
+      state.currentSingleName = 'Select metrics';
+      if (state.selectedNames.length === 0) state.isMetricSelected = false;
+    },
   },
 });
 

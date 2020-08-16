@@ -1,6 +1,7 @@
 import React from 'react';
 import { IState } from '../../store';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { actions } from './reducer';
 
 const getMetrics = (state: IState) => {
   const { metricsNamesArray, newMetircsValues } = state.metrics;
@@ -47,11 +48,18 @@ export default () => {
     }
   });
 
+  const dispatch = useDispatch();
+
   //   console.log('selected: ', chosenUnitVal);
+
+  const removeDisplay = (name: string) => {
+    dispatch(actions.removeMetricDisplay(name));
+  };
 
   const displayValue = chosenUnitVal.map((item, i) => (
     <li key={i}>
       {item.name} : {item.value} {item.unit}
+      <button onClick={() => removeDisplay(item.name)}>close</button>
     </li>
   ));
 
