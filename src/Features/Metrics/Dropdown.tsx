@@ -4,7 +4,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 // import InputLabel from '@material-ui/core/InputLabel';
-import Grid from '@material-ui/core/Grid';
+// import Grid from '@material-ui/core/Grid';
 // import Fab from '@material-ui/core/Fab';
 // import CloseIcon from '@material-ui/icons/Close';
 // import Button from '@material-ui/core/Button';
@@ -41,26 +41,24 @@ export default () => {
   };
 
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={12} sm={6}>
-        <FormControl variant="outlined" fullWidth={true} className={classes.formControl}>
-          <Select
-            labelId="demo-simple-select-outlined-label"
-            id="demo-simple-select-outlined"
-            value={currentSingleName}
-            onChange={handleChange}
-          >
-            <MenuItem value={currentSingleName}>
-              <em>{currentSingleName}</em>
+    <React.Fragment>
+      <FormControl variant="outlined" fullWidth={true} className={classes.formControl}>
+        <Select
+          labelId="demo-simple-select-outlined-label"
+          id="demo-simple-select-outlined"
+          value={currentSingleName}
+          onChange={handleChange}
+        >
+          <MenuItem value={currentSingleName}>
+            <em>{currentSingleName}</em>
+          </MenuItem>
+          {metricsNamesArray.map((mName, i) => (
+            <MenuItem key={i} value={mName}>
+              {mName}
             </MenuItem>
-            {metricsNamesArray.map((mName, i) => (
-              <MenuItem key={i} value={mName}>
-                {mName}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Grid>
-    </Grid>
+          ))}
+        </Select>
+      </FormControl>
+    </React.Fragment>
   );
 };

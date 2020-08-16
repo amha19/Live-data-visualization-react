@@ -20,6 +20,7 @@ const initialState = {
   selectedNames: [] as string[],
   metricsMeasurementsArray: [] as MeasurementAction,
   newMetircsValues: [] as MeasurementAction,
+  selectedCurrentValues: [] as any[],
 };
 
 const slice = createSlice({
@@ -72,6 +73,11 @@ const slice = createSlice({
       //   console.log(state.selectedNames);
       state.currentSingleName = 'Select metrics';
       if (state.selectedNames.length === 0) state.isMetricSelected = false;
+    },
+
+    storeCurrentValues: (state, action: PayloadAction<any[]>) => {
+      // console.log('reducer: ', action.payload);
+      state.selectedCurrentValues = action.payload;
     },
   },
 });

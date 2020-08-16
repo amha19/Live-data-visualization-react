@@ -1,18 +1,18 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { IState } from '../../store';
 import { useSelector, useDispatch } from 'react-redux';
 import { actions } from './reducer';
 
 const getMetrics = (state: IState) => {
-  const { metricsNamesArray, newMetircsValues } = state.metrics;
+  const { selectedNames, newMetircsValues } = state.metrics;
   return {
-    metricsNamesArray,
+    selectedNames,
     newMetircsValues,
   };
 };
 
 export default () => {
-  const { metricsNamesArray, newMetircsValues } = useSelector(getMetrics);
+  const { selectedNames, newMetircsValues } = useSelector(getMetrics);
 
   // sorts array of new metrics values based on timestamp
   const sortedMetrics = [...newMetircsValues];
@@ -34,13 +34,13 @@ export default () => {
     }
   }
 
-  const chosenUnitVal: any[] = [];
+  const selectedUnitVal: any[] = [];
 
   // pushes the latest values for the selected metrics
-  metricsNamesArray.forEach(name => {
+  selectedNames.forEach(name => {
     for (let i of lastUnitvalues) {
       if (name === i.name)
-        chosenUnitVal.push({
+        selectedUnitVal.push({
           name: i.name,
           value: i.value,
           unit: i.unit,
@@ -50,22 +50,10 @@ export default () => {
 
   const dispatch = useDispatch();
 
-  //   console.log('selected: ', chosenUnitVal);
+  useEffect(() => {
+    dispatch(actions.storeCurrentValues(selectedUnitVal));
+    // console.log('Selected: ', selectedUnitVal);
+  }, [newMetircsValues, dispatch]);
 
-  const removeDisplay = (name: string) => {
-    dispatch(actions.removeMetricDisplay(name));
-  };
-
-  const displayValue = chosenUnitVal.map((item, i) => (
-    <li key={i}>
-      {item.name} : {item.value} {item.unit}
-      <button onClick={() => removeDisplay(item.name)}>close</button>
-    </li>
-  ));
-
-  return (
-    <React.Fragment>
-      <ul>{displayValue}</ul>
-    </React.Fragment>
-  );
+  return null;
 };

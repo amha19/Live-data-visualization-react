@@ -4,7 +4,6 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { useDispatch, useSelector } from 'react-redux';
 import { IState } from '../../store';
 import { actions } from './reducer';
-import Dropdown from './Dropdown';
 import MultipleMeasurements from './MultipleMeasurements';
 import MetricsSubscription from './MetricsSubscription';
 
@@ -37,7 +36,7 @@ export default () => {
 const MetricsQueries = () => {
   const dispatch = useDispatch();
 
-  const { metricsNamesArray, isMetricSelected } = useSelector(getMetrics);
+  const { isMetricSelected } = useSelector(getMetrics);
 
   const [result] = useQuery({ query });
 
@@ -54,13 +53,12 @@ const MetricsQueries = () => {
     dispatch(actions.metricsNamesRecived(getMetrics));
 
     // console.log('From useEffect: ', metricsNamesArray);
-  }, [metricsNamesArray, dispatch, data, error]);
+  }, [dispatch, data, error]);
 
   if (fetching) return <LinearProgress />;
 
   return (
     <React.Fragment>
-      <Dropdown />
       {isMetricSelected ? (
         <React.Fragment>
           <MultipleMeasurements />

@@ -15,8 +15,13 @@ function* newMetricMeasurementRecived(action: PayloadAction<NewMeasurementAction
   yield call(MetricsActions.newMeasurementRecived, action.payload);
 }
 
+function* currentMetricsValues(action: PayloadAction<any[]>) {
+  yield call(MetricsActions.storeCurrentValues, action.payload);
+}
+
 export default function* watchApiCalls() {
   yield takeEvery(MetricsActions.weatherApiErrorReceived.type, apiErrorReceived);
   yield takeEvery(MetricsActions.singleMeasurementRecived.type, measurementRecived);
   yield takeEvery(MetricsActions.newMeasurementRecived.type, newMetricMeasurementRecived);
+  yield takeEvery(MetricsActions.storeCurrentValues.type, currentMetricsValues);
 }

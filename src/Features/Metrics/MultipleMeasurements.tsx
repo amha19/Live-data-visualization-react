@@ -4,7 +4,6 @@ import { Provider, createClient, useQuery } from 'urql';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { IState } from '../../store';
 import { actions } from './reducer';
-import MetricsGraph from './MetricsGraph';
 
 const client = createClient({
   url: 'https://react.eogresources.com/graphql',
@@ -96,5 +95,5 @@ const MultipleMeasurements = () => {
 
   if (fetching) return <LinearProgress />;
 
-  return <MetricsGraph />;
+  return null;
 };
