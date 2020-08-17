@@ -5,22 +5,22 @@ import moment from 'moment';
 import { IState } from '../../store';
 
 const getMetrics = (state: IState) => {
-  const { selectedNames, metricsMeasurementsArray } = state.metrics;
+  const { selectedNames, metricsMeasurementsArray, newMetircsValues } = state.metrics;
   return {
     selectedNames,
     metricsMeasurementsArray,
+    newMetircsValues,
   };
 };
 
 export default () => {
-  const { selectedNames, metricsMeasurementsArray } = useSelector(getMetrics);
+  const { selectedNames, metricsMeasurementsArray, newMetircsValues } = useSelector(getMetrics);
 
   type ImetricData = {
     labels: string[];
     datasets: {
       label: string;
       data: number[];
-      // backgroundColor: string[];
       borderWidth: number;
       fill: boolean;
       pointRadius: number;
@@ -92,25 +92,39 @@ export default () => {
   };
 
   let arraysOfyAxes: any[] = [];
+  let axisData: any[] = [];
 
   selectedNames.forEach(name => {
+    console.log(name);
+    let valueUnit: string = '';
+    if (name === 'casingPressure' || name === 'tubingPressure') {
+      valueUnit = 'PSI';
+    } else if (name === 'injValveOpen') {
+      valueUnit = '%';
+    } else {
+      valueUnit = 'F';
+    }
+
     arraysOfyAxes.push({
       id: name,
       ticks: {
-        autoSkip: true,
+        autoSkip: false,
         maxTicksLimit: 10,
         beginAtZero: false,
-        // backdropPaddingY,
-        showLabelBackdrop: true,
+        showLabelBackdrop: false,
         backdropColor: ['rgba(0, 64, 255, 0.2)'],
       },
       gridLines: {
         display: true,
+        drawOnChartArea: false,
+        tickMarkLength: 5,
+      },
+      scaleLabel: {
+        display: true,
+        labelString: valueUnit,
       },
     });
   });
-
-  //   console.log(arraysOfyAxes);
 
   return (
     <React.Fragment>
@@ -124,13 +138,25 @@ export default () => {
             xAxes: [
               {
                 gridLines: {
-                  display: false,
+                  display: true,
+                  drawOnChartArea: false,
+                  tickMarkLength: 6,
                 },
                 ticks: {
                   stepSize: 2,
+                  maxTicksLimit: 5,
+                  //   fontStyle: 'transform: rotate(45deg)',
                 },
               },
             ],
+          },
+          tooltips: {
+            mode: 'index',
+            intersect: false,
+          },
+          hover: {
+            mode: 'index',
+            intersect: false,
           },
         }}
       />

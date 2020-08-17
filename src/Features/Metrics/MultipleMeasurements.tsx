@@ -54,12 +54,12 @@ const MultipleMeasurements = () => {
 
   // Testing only for 1-minute interval
   const timeBefore = timeStamp;
-  const timeAfter = timeBefore - 10000;
+  const timeAfter = timeBefore - 600000;
   // 1.8e+6;
 
   const input: metricInput[] = [];
 
-  selectedNames.map(name => {
+  selectedNames.forEach(name => {
     return input.push({
       metricName: name,
       before: timeBefore,

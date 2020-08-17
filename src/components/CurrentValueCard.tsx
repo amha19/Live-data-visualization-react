@@ -22,7 +22,6 @@ const getMetrics = (state: IState) => {
 const useStyles = makeStyles(theme => ({
   root: {
     minWidth: 100,
-    width: '100%',
   },
   title: {
     fontSize: 14,
