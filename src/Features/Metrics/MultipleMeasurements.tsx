@@ -53,7 +53,8 @@ const MultipleMeasurements = () => {
   const { selectedNames, currentSingleName } = useSelector(getMetrics);
 
   const timeBefore = timeStamp;
-  const timeAfter = timeBefore - 10000;
+  // Use fewer milliseconds like 10000 for faster response
+  const timeAfter = timeBefore - 1.8e6;
 
   const input: metricInput[] = [];
 
