@@ -52,10 +52,8 @@ const MultipleMeasurements = () => {
 
   const { selectedNames, currentSingleName } = useSelector(getMetrics);
 
-  // Testing only for 1-minute interval
   const timeBefore = timeStamp;
-  const timeAfter = timeBefore - 600000;
-  // 1.8e+6;
+  const timeAfter = timeBefore - 10000;
 
   const input: metricInput[] = [];
 
@@ -83,8 +81,6 @@ const MultipleMeasurements = () => {
     }
     if (!data) return;
     const { getMultipleMeasurements } = data;
-
-    // console.log('inside useEffect: ', getMultipleMeasurements);
 
     getMultipleMeasurements.forEach((measurement: { metric: string; measurements: any }) => {
       if (measurement.metric === currentSingleName) {

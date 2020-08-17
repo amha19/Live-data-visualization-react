@@ -3,11 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-// import InputLabel from '@material-ui/core/InputLabel';
-// import Grid from '@material-ui/core/Grid';
-// import Fab from '@material-ui/core/Fab';
-// import CloseIcon from '@material-ui/icons/Close';
-// import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { IState } from '../../store';

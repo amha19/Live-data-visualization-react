@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { IState } from '../../store';
 import { useSelector, useDispatch } from 'react-redux';
-import { actions } from './reducer';
+import { actions, NameValueUnit } from './reducer';
 
 const getMetrics = (state: IState) => {
   const { selectedNames, newMetircsValues } = state.metrics;
@@ -20,7 +20,7 @@ export default () => {
     return a.at - b.at;
   });
 
-  const lastUnitvalues: any[] = [];
+  const lastUnitvalues: NameValueUnit[] = [];
 
   if (sortedMetrics.length > 5) {
     const len = sortedMetrics.length - 1;
@@ -34,7 +34,7 @@ export default () => {
     }
   }
 
-  const selectedUnitVal: any[] = [];
+  const selectedUnitVal: NameValueUnit[] = [];
 
   // pushes the latest values for the selected metrics
   selectedNames.forEach(name => {
@@ -52,7 +52,6 @@ export default () => {
 
   useEffect(() => {
     dispatch(actions.storeCurrentValues(selectedUnitVal));
-    // console.log('Selected: ', selectedUnitVal);
   }, [newMetircsValues, dispatch]);
 
   return null;

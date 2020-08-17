@@ -4,6 +4,8 @@ export type ApiErrorAction = {
   error: string;
 };
 
+export type MetricsNamesState = string[];
+
 export type NewMeasurementAction = {
   at: number;
   metric: string;
@@ -11,16 +13,22 @@ export type NewMeasurementAction = {
   value: number;
 };
 
+export type NameValueUnit = {
+  name: string;
+  value: number;
+  unit: string;
+};
+
 export type MeasurementAction = NewMeasurementAction[];
 
 const initialState = {
-  metricsNamesArray: [] as string[],
+  metricsNamesArray: [] as MetricsNamesState,
   isMetricSelected: false,
   currentSingleName: 'Select metrics',
-  selectedNames: [] as string[],
+  selectedNames: [] as MetricsNamesState,
   metricsMeasurementsArray: [] as MeasurementAction,
   newMetircsValues: [] as MeasurementAction,
-  selectedCurrentValues: [] as any[],
+  selectedCurrentValues: [] as NameValueUnit[],
 };
 
 const slice = createSlice({
@@ -63,20 +71,17 @@ const slice = createSlice({
     },
 
     removeMetricDisplay: (state, action: PayloadAction<string>) => {
-      // console.log(action.payload);
       let arr1 = [...state.selectedNames];
       let arr2 = [...state.metricsMeasurementsArray];
 
       state.selectedNames = arr1.filter(element => element !== action.payload);
       state.metricsMeasurementsArray = arr2.filter(element => element.metric !== action.payload);
 
-      //   console.log(state.selectedNames);
       state.currentSingleName = 'Select metrics';
       if (state.selectedNames.length === 0) state.isMetricSelected = false;
     },
 
     storeCurrentValues: (state, action: PayloadAction<any[]>) => {
-      // console.log('reducer: ', action.payload);
       state.selectedCurrentValues = action.payload;
     },
   },

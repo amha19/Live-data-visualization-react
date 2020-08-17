@@ -5,16 +5,15 @@ import moment from 'moment';
 import { IState } from '../../store';
 
 const getMetrics = (state: IState) => {
-  const { selectedNames, metricsMeasurementsArray, newMetircsValues } = state.metrics;
+  const { selectedNames, metricsMeasurementsArray } = state.metrics;
   return {
     selectedNames,
     metricsMeasurementsArray,
-    newMetircsValues,
   };
 };
 
 export default () => {
-  const { selectedNames, metricsMeasurementsArray, newMetircsValues } = useSelector(getMetrics);
+  const { selectedNames, metricsMeasurementsArray } = useSelector(getMetrics);
 
   type ImetricData = {
     labels: string[];
@@ -37,7 +36,7 @@ export default () => {
     .filter(e => e.metric === metricName)
     .map(e => moment(e.at).format('LT'));
 
-  let chartDatasets: any[] = [];
+  const chartDatasets: any[] = [];
 
   selectedNames.forEach(name => {
     let num = 0;
@@ -66,16 +65,16 @@ export default () => {
         color = ['rgb(230, 230, 230)'];
     }
 
-    for (let i of metricsMeasurementsArray) {
+    for (const i of metricsMeasurementsArray) {
       const arrayOfValueData = metricsMeasurementsArray.filter(e => e.metric === name).map(element => element.value);
 
       if (name === i.metric && num === 0) {
         chartDatasets.push({
-          label: `${name} Value`,
+          label: name,
           data: arrayOfValueData,
           borderWidth: 1,
           fill: false,
-          pointRadius: 1,
+          pointRadius: 0,
           borderColor: color,
           yAxisID: name,
         });
@@ -84,18 +83,14 @@ export default () => {
     }
   });
 
-  //   console.log(chartDatasets);
-
   metricData = {
     labels: metricLabels,
     datasets: chartDatasets,
   };
 
-  let arraysOfyAxes: any[] = [];
-  let axisData: any[] = [];
+  const arraysOfyAxes: any[] = [];
 
   selectedNames.forEach(name => {
-    console.log(name);
     let valueUnit: string = '';
     if (name === 'casingPressure' || name === 'tubingPressure') {
       valueUnit = 'PSI';
@@ -108,7 +103,7 @@ export default () => {
     arraysOfyAxes.push({
       id: name,
       ticks: {
-        autoSkip: false,
+        autoSkip: true,
         maxTicksLimit: 10,
         beginAtZero: false,
         showLabelBackdrop: false,
@@ -132,7 +127,7 @@ export default () => {
         data={metricData}
         options={{
           responsive: true,
-          title: { text: `Metrics scale`, display: true },
+          title: { text: 'Metrics chart', display: true },
           scales: {
             yAxes: arraysOfyAxes,
             xAxes: [
@@ -144,7 +139,7 @@ export default () => {
                 },
                 ticks: {
                   stepSize: 2,
-                  maxTicksLimit: 5,
+                  maxTicksLimit: 10,
                   //   fontStyle: 'transform: rotate(45deg)',
                 },
               },
@@ -153,6 +148,7 @@ export default () => {
           tooltips: {
             mode: 'index',
             intersect: false,
+            backgroundColor: 'rgb(128, 146, 179)',
           },
           hover: {
             mode: 'index',

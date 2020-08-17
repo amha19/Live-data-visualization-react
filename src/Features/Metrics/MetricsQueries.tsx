@@ -49,10 +49,7 @@ const MetricsQueries = () => {
     }
     if (!data) return;
     const { getMetrics } = data;
-    // console.log(getMetrics);
     dispatch(actions.metricsNamesRecived(getMetrics));
-
-    // console.log('From useEffect: ', metricsNamesArray);
   }, [dispatch, data, error]);
 
   if (fetching) return <LinearProgress />;

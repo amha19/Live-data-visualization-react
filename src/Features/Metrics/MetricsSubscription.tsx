@@ -66,17 +66,12 @@ const MetricsSubscription = () => {
     }
     if (!data) return;
     const { newMeasurement } = data;
-
-    // console.log(newMeasurement.metric);
     metricsNamesArray.forEach(name => {
-      // filters out the current measurement for the selected metric
       if (newMeasurement.metric === name) {
         dispatch(actions.newMeasurementRecived(newMeasurement));
       }
     });
     dispatch(actions.storeNewMeasurements(newMeasurement));
-
-    // console.log(newMeasurement);
   }, [metricsNamesArray, dispatch, data, error]);
 
   if (!data) return <LinearProgress />;
