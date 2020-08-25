@@ -1,8 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Line } from 'react-chartjs-2';
 import moment from 'moment';
 import { IState } from '../../store';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 const getMetrics = (state: IState) => {
   const { selectedNames, metricsMeasurementsArray } = state.metrics;
@@ -15,80 +16,32 @@ const getMetrics = (state: IState) => {
 export default () => {
   const { selectedNames, metricsMeasurementsArray } = useSelector(getMetrics);
 
-  type ImetricData = {
-    labels: string[];
-    datasets: {
-      label: string;
-      data: number[];
-      borderWidth: number;
-      fill: boolean;
-      pointRadius: number;
-      borderColor: string[];
-      yAxisID: string;
-    }[];
-  };
+  let metricData: any[] = [];
 
-  let metricData = {} as ImetricData;
+  if (!metricsMeasurementsArray[0]) return <LinearProgress />;
 
-  const metricName = selectedNames[0];
-
-  const metricLabels = metricsMeasurementsArray
-    .filter(e => e.metric === metricName)
-    .map(e => moment(e.at).format('LT'));
-
-  const chartDatasets: any[] = [];
-
-  selectedNames.forEach(name => {
-    let num = 0;
-    let color = [] as string[];
-
-    switch (name) {
-      case 'oilTemp':
-        color = ['rgb(51, 51, 51)'];
-        break;
-      case 'waterTemp':
-        color = ['rgb(51, 102, 255)'];
-        break;
-      case 'flareTemp':
-        color = ['rgb(255, 83, 26)'];
-        break;
-      case 'casingPressure':
-        color = ['rgb(68, 204, 0)'];
-        break;
-      case 'tubingPressure':
-        color = ['rgb(117, 117, 163)'];
-        break;
-      case 'injValveOpen':
-        color = ['rgb(230, 230, 0)'];
-        break;
-      default:
-        color = ['rgb(230, 230, 230)'];
+  metricsMeasurementsArray.forEach((item, index) => {
+    if (index === 0) {
+      for (const i of item.measurements) {
+        metricData.push({
+          at: i.at,
+          [i.metric]: i.value,
+        });
+      }
     }
 
-    for (const i of metricsMeasurementsArray) {
-      const arrayOfValueData = metricsMeasurementsArray.filter(e => e.metric === name).map(element => element.value);
-
-      if (name === i.metric && num === 0) {
-        chartDatasets.push({
-          label: name,
-          data: arrayOfValueData,
-          borderWidth: 1,
-          fill: false,
-          pointRadius: 0,
-          borderColor: color,
-          yAxisID: name,
+    if (index > 0) {
+      metricData.forEach((el, i) => {
+        item.measurements.forEach((element: any, index: number) => {
+          if (i === index) {
+            el[element.metric] = element.value;
+          }
         });
-        num++;
-      }
+      });
     }
   });
 
-  metricData = {
-    labels: metricLabels,
-    datasets: chartDatasets,
-  };
-
-  const arraysOfyAxes: any[] = [];
+  const metricNameUnit: { name: string; unit: string }[] = [];
 
   selectedNames.forEach(name => {
     let valueUnit: string = '';
@@ -97,65 +50,57 @@ export default () => {
     } else if (name === 'injValveOpen') {
       valueUnit = '%';
     } else {
-      valueUnit = 'F';
+      valueUnit = '°F';
     }
 
-    arraysOfyAxes.push({
-      id: name,
-      ticks: {
-        autoSkip: true,
-        maxTicksLimit: 10,
-        beginAtZero: false,
-        showLabelBackdrop: false,
-        backdropColor: ['rgba(0, 64, 255, 0.2)'],
-      },
-      gridLines: {
-        display: true,
-        drawOnChartArea: false,
-        tickMarkLength: 5,
-      },
-      scaleLabel: {
-        display: true,
-        labelString: valueUnit,
-      },
+    metricNameUnit.push({
+      name: name,
+      unit: valueUnit,
     });
   });
 
   return (
     <React.Fragment>
-      <Line
-        data={metricData}
-        options={{
-          responsive: true,
-          title: { text: 'Metrics chart', display: true },
-          scales: {
-            yAxes: arraysOfyAxes,
-            xAxes: [
-              {
-                gridLines: {
-                  display: true,
-                  drawOnChartArea: false,
-                  tickMarkLength: 6,
-                },
-                ticks: {
-                  stepSize: 2,
-                  maxTicksLimit: 10,
-                  //   fontStyle: 'transform: rotate(45deg)',
-                },
-              },
-            ],
-          },
-          tooltips: {
-            mode: 'index',
-            intersect: false,
-            backgroundColor: 'rgb(128, 146, 179)',
-          },
-          hover: {
-            mode: 'index',
-            intersect: false,
-          },
-        }}
-      />
+      <ResponsiveContainer width={'99%'} height={500}>
+        <LineChart data={metricData} margin={{ top: 20 }}>
+          <XAxis
+            dataKey="at"
+            tickFormatter={tick => moment(tick).format('LT')}
+            padding={{ left: 20, right: 0 }}
+            tickSize={3}
+            dy={6}
+            minTickGap={20}
+          />
+          {metricNameUnit.map((item, i) => {
+            return (
+              <YAxis
+                key={i}
+                yAxisId={item.unit}
+                domain={['auto', 'auto']}
+                padding={{ top: 0, bottom: 15 }}
+                label={{ value: item.unit, angle: -90, position: 'insideTopRight', offset: -3 }}
+                tickSize={3}
+                tickFormatter={tick => (tick < 999 ? tick : `${(tick / 1000).toFixed(1)} k`)}
+              />
+            );
+          })}
+          <Tooltip labelFormatter={at => moment(at).format('MMM Do h:mm:ss a')} />
+          {metricNameUnit.map((item, i) => {
+            const cN = item.name.charCodeAt(0) - 96;
+            const color = `hsl(${cN * 15}, ${cN * 4}%, 55%)`;
+            return (
+              <Line
+                key={i}
+                yAxisId={item.unit}
+                type="monotone"
+                dataKey={item.name}
+                stroke={color}
+                activeDot={{ r: 0 }}
+              />
+            );
+          })}
+        </LineChart>
+      </ResponsiveContainer>
     </React.Fragment>
   );
 };

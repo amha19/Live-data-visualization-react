@@ -17,17 +17,21 @@ export type NameValueUnit = {
   name: string;
   value: number;
   unit: string;
+  color: string;
 };
 
-export type MeasurementAction = NewMeasurementAction[];
+export type MultipleMeasurementsAction = {
+  metric: string;
+  measurements: NewMeasurementAction[];
+};
 
 const initialState = {
   metricsNamesArray: [] as MetricsNamesState,
   isMetricSelected: false,
   currentSingleName: 'Select metrics',
   selectedNames: [] as MetricsNamesState,
-  metricsMeasurementsArray: [] as MeasurementAction,
-  newMetircsValues: [] as MeasurementAction,
+  metricsMeasurementsArray: [] as MultipleMeasurementsAction[],
+  newMetircsValues: [] as NewMeasurementAction[],
   selectedCurrentValues: [] as NameValueUnit[],
 };
 
@@ -37,7 +41,7 @@ const slice = createSlice({
   reducers: {
     weatherApiErrorReceived: (state, action: PayloadAction<ApiErrorAction>) => state,
 
-    metricsNamesRecived: (state, action: PayloadAction<string[]>) => {
+    metricsNamesRecived: (state, action: PayloadAction<MetricsNamesState>) => {
       state.metricsNamesArray = action.payload;
     },
 
@@ -49,21 +53,22 @@ const slice = createSlice({
       state.isMetricSelected = true;
     },
 
-    singleMeasurementRecived: (state, action: PayloadAction<MeasurementAction>) => {
-      state.metricsMeasurementsArray = [...state.metricsMeasurementsArray, ...action.payload];
+    multipleMeasurementRecived: (state, action: PayloadAction<MultipleMeasurementsAction[]>) => {
+      state.metricsMeasurementsArray = action.payload;
     },
 
     newMeasurementRecived: (state, action: PayloadAction<NewMeasurementAction>) => {
-      // filters selected metrics. Shift out the earliest value and pops in the current value
-      let arr1: MeasurementAction = [...state.metricsMeasurementsArray];
-      let arr2: MeasurementAction = arr1.filter(obj => obj.metric === action.payload.metric);
-      let arr3: MeasurementAction = arr1.filter(obj => obj.metric !== action.payload.metric);
-      let arr4: MeasurementAction = [];
-      arr2.shift();
-      arr2.push(action.payload);
-      arr4 = [...arr2, ...arr3];
+      // Loops through the measurements and
+      // shift out the earliest value and pops in the current value
+      let arr1: MultipleMeasurementsAction[] = [...state.metricsMeasurementsArray];
+      for (const i of arr1) {
+        if (i.metric === action.payload.metric) {
+          i.measurements.shift();
+          i.measurements.push(action.payload);
+        }
+      }
 
-      state.metricsMeasurementsArray = arr4;
+      state.metricsMeasurementsArray = arr1;
     },
 
     storeNewMeasurements: (state, action: PayloadAction<NewMeasurementAction>) => {

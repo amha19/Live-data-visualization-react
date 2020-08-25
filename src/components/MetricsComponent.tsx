@@ -4,8 +4,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Dropdown from '../Features/Metrics/Dropdown';
 import { IState } from '../store';
-import MetricsGraph from '../Features/Metrics/MetricsGraph';
 import CurrentValueCard from './CurrentValueCard';
+import MetricsGraph from '../Features/Metrics/MetricsGraph';
 
 const getMetrics = (state: IState) => {
   const { isMetricSelected } = state.metrics;

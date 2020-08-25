@@ -27,6 +27,14 @@ const useStyles = makeStyles(theme => ({
   gridDisplay: {
     padding: theme.spacing(1),
   },
+  button: {
+    color: '#ccc',
+    '&:hover': {
+      color: '#000',
+      transitionProperty: 'color',
+      transitionDuration: '0.3s',
+    },
+  },
 }));
 
 export default () => {
@@ -46,7 +54,7 @@ export default () => {
           <Grid key={i} item md={3} className={classes.gridDisplay}>
             <Card className={classes.root}>
               <CardContent>
-                <Typography className={classes.title} color="textSecondary" gutterBottom>
+                <Typography className={classes.title} color="textSecondary" style={{ color: item.color }} gutterBottom>
                   {item.name}
                 </Typography>
                 <Typography variant="h5" component="h2">
@@ -56,9 +64,9 @@ export default () => {
                   {item.unit}
                 </Typography>
               </CardContent>
-              <CardActions>
+              <CardActions style={{ marginTop: '-16px' }}>
                 <Button size="small" onClick={() => removeDisplay(item.name)}>
-                  close
+                  <span className={classes.button}>close</span>
                 </Button>
               </CardActions>
             </Card>

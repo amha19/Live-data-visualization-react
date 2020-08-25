@@ -66,11 +66,7 @@ const MetricsSubscription = () => {
     }
     if (!data) return;
     const { newMeasurement } = data;
-    metricsNamesArray.forEach(name => {
-      if (newMeasurement.metric === name) {
-        dispatch(actions.newMeasurementRecived(newMeasurement));
-      }
-    });
+    dispatch(actions.newMeasurementRecived(newMeasurement));
     dispatch(actions.storeNewMeasurements(newMeasurement));
   }, [metricsNamesArray, dispatch, data, error]);
 

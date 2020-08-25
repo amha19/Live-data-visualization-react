@@ -30,6 +30,7 @@ export default () => {
         name: sortedMetrics[i].metric,
         value: newMetircsValues[i].value,
         unit: newMetircsValues[i].unit,
+        color: '',
       });
     }
   }
@@ -38,12 +39,16 @@ export default () => {
 
   // pushes the latest values for the selected metrics
   selectedNames.forEach(name => {
+    // color based on the different metrics name.
+    const cN = name.charCodeAt(0) - 96;
+    const color = `hsl(${cN * 15}, ${cN * 4}%, 55%)`;
     for (let i of lastUnitvalues) {
       if (name === i.name)
         selectedUnitVal.push({
           name: i.name,
           value: i.value,
           unit: i.unit,
+          color: color,
         });
     }
   });

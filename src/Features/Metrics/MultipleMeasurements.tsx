@@ -26,9 +26,9 @@ const query = `
 const timeStamp = +new Date();
 
 const getMetrics = (state: IState) => {
-  const { selectedNames, currentSingleName } = state.metrics;
+  const { metricsNamesArray, currentSingleName } = state.metrics;
   return {
-    selectedNames,
+    metricsNamesArray,
     currentSingleName,
   };
 };
@@ -50,16 +50,17 @@ export default () => {
 const MultipleMeasurements = () => {
   const dispatch = useDispatch();
 
-  const { selectedNames, currentSingleName } = useSelector(getMetrics);
+  const { metricsNamesArray, currentSingleName } = useSelector(getMetrics);
 
   const timeBefore = timeStamp;
   // Use fewer milliseconds like 10000 for faster response
   const timeAfter = timeBefore - 1.8e6;
+  // 1.8e6;
 
   const input: metricInput[] = [];
 
-  selectedNames.forEach(name => {
-    return input.push({
+  metricsNamesArray.forEach(name => {
+    input.push({
       metricName: name,
       before: timeBefore,
       after: timeAfter,
@@ -82,12 +83,7 @@ const MultipleMeasurements = () => {
     }
     if (!data) return;
     const { getMultipleMeasurements } = data;
-
-    getMultipleMeasurements.forEach((measurement: { metric: string; measurements: any }) => {
-      if (measurement.metric === currentSingleName) {
-        dispatch(actions.singleMeasurementRecived(measurement.measurements));
-      }
-    });
+    dispatch(actions.multipleMeasurementRecived(getMultipleMeasurements));
   }, [currentSingleName, dispatch, data, error]);
 
   if (fetching) return <LinearProgress />;
