@@ -68,7 +68,6 @@ export default () => {
             tickFormatter={tick => moment(tick).format('LT')}
             padding={{ left: 20, right: 0 }}
             tickSize={3}
-            dy={6}
             minTickGap={20}
           />
           {metricNameUnit.map((item, i) => {
