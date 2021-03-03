@@ -4,7 +4,8 @@ This app displays live current value and 30mins historical values of a chosen it
 
 ## Tech/Stack
 
-- React.js / Material UI
+- React.js
+- Material UI
 - TypeScript
 - Redux
 - Redux-saga
@@ -25,6 +26,9 @@ This app displays live current value and 30mins historical values of a chosen it
 
 ![data_V_React2](https://user-images.githubusercontent.com/34722096/108796734-0d3e8780-754f-11eb-87fb-3fd5b2e48c7f.png)
 
+### `npm install`
+
+Installs all dependencies.
 
 ### `npm start`
 
