@@ -1,6 +1,6 @@
 # Live Data Visualization App
 
-This app displays live current value and 30mins historical values of a chosen item.
+This app helps users visualize live current and 30mins historical values of a chosen item. The data updates itself every 1.3 seconds. 
 
 ## Tech/Stack
 
